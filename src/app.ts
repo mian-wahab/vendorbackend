@@ -23,21 +23,7 @@ app.use(json({ limit: '50mb' }));
 
 app.use(express.json());
 
-// app.use(cors({ origin: true, credentials: true }));
-app.use(cors({
-    origin: 'https://toplinemcnamaraswebapp.vercel.app', // Replace with your frontend's URL
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-}));
-
-app.options('*', cors({
-    origin: 'https://toplinemcnamaraswebapp.vercel.app',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-}));
-
+app.use(cors({ origin: true, credentials: true }));
 
 app.use(helmet());
 
