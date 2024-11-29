@@ -7,4 +7,3 @@
     { "src": "/(.*)", "dest": "dist/app.js" }
   ]
 }
-
