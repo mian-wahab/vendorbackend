@@ -2,6 +2,7 @@ import express, { ErrorRequestHandler, NextFunction, Request, Response } from 'e
 import dotenv from 'dotenv';
 import { isCelebrateError } from 'celebrate';
 import cors from 'cors';
+import 'module-alias/register';
 import helmet from 'helmet';
 import { json } from 'body-parser';
 import routes from './api/routes';
@@ -39,9 +40,14 @@ app.use(cors({
 app.use(helmet());
 
 dbConnector();
-
+console.log('Resolved path for "@/validators":', require.resolve('@/validators'));
 app.get('/', (req: Request, res: Response) => {
     res.send('Welcome to Vendor-Management.');
+});
+app._router.stack.forEach((r) => {
+    if (r.route && r.route.path) {
+        console.log(r.route.path);
+    }
 });
 
 app.use('/api/v1', routes);
