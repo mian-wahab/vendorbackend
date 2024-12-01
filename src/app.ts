@@ -20,16 +20,29 @@ const port = process.env.PORT;
 
 app.use(json({ limit: '50mb' }));
 
-
 app.use(express.json());
 
-app.use(cors({ origin: true, credentials: true }));
+// Configure CORS
+app.use(cors({
+    origin: (origin, callback) => {
+        // Allow requests from specific origins or any origin during development
+        const allowedOrigins = ['http://localhost:3000', 'https://toplinemcnamaraswebapp.vercel.app/']; // Replace with your front-end URL(s)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+}));
 
 app.use(helmet());
 
 dbConnector();
 
-app.get('/', (req: Request, res: Response) => { res.send('Welcome to Vendor-Management.') });
+app.get('/', (req: Request, res: Response) => {
+    res.send('Welcome to Vendor-Management.');
+});
 
 app.use('/api/v1', routes);
 
@@ -39,8 +52,8 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
     }
 });
 
-
-cron.schedule('*/15 * * * *',
+cron.schedule(
+    '*/15 * * * *',
     async () => {
         const pendingCrons = await cronService.getRecentPendingCrons(new Date());
         console.log('Pending crons:', pendingCrons);
@@ -50,23 +63,8 @@ cron.schedule('*/15 * * * *',
     },
     {
         scheduled: true,
-        // runOnInit: true,
     }
 );
-
-// cron.schedule('* * * * *',    // 1 minute for testing
-//     async () => {
-//         const pendingCrons = await cronService.getRecentPendingCrons(new Date());
-//         console.log('Pending crons:', pendingCrons.map(cron => cron._id));
-//         for (const cronJob of pendingCrons) {
-//             await cronService.processCronJob(cronJob);
-//         }
-//     },
-//     {
-//         scheduled: true,
-//         // runOnInit: true,
-//     }
-// );
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
