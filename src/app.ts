@@ -44,7 +44,7 @@ console.log('Resolved path for "@/validators":', require.resolve('@/validators')
 app.get('/', (req: Request, res: Response) => {
     res.send('Welcome to Vendor-Management.');
 });
-app._router.stack.forEach((r) => {
+(app._router.stack as any[]).forEach((r: any) => {
     if (r.route && r.route.path) {
         console.log(r.route.path);
     }
